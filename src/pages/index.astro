@@ -1,0 +1,108 @@
+---
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geo Tag Camera</title>
+  <meta name="description" content="Create GPS map camera photos in your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    :root{font-family:Inter,system-ui,sans-serif;color:#f5f7fa;background:#0b0d10}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 80% -10%,#27303b 0,#10141a 38%,#0b0d10 68%)}main{max-width:1240px;margin:auto;padding:40px 22px 56px}.top{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:28px}.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:#8c97a6;font-weight:700}.title{font-size:42px;line-height:1.05;margin:8px 0 8px;letter-spacing:-.04em}.sub{color:#a7b0bc;max-width:680px;line-height:1.6}.grid{display:grid;grid-template-columns:370px 1fr;gap:22px}.panel,.preview{border:1px solid #29313a;background:rgba(17,21,26,.84);backdrop-filter:blur(18px);border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.28)}.panel{padding:20px}.section{margin-bottom:20px}.section h3{font-size:13px;margin:0 0 11px;color:#cbd2db}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:11px}.field label{font-size:12px;color:#87919e}.field input{width:100%;background:#0c0f13;color:#edf2f7;border:1px solid #303944;border-radius:11px;padding:11px 12px;outline:none}.field input:focus{border-color:#6b7684}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.btn{border:1px solid #37404b;background:#12171d;color:#eef2f5;border-radius:11px;padding:11px 12px;font-weight:700;cursor:pointer}.btn.primary{background:#f0f3f6;color:#0d1014;border-color:#f0f3f6}.btn:disabled{opacity:.4;cursor:not-allowed}.upload{border:1px dashed #3b4550;border-radius:15px;padding:19px;text-align:center;color:#8994a1}.upload input{display:none}.upload strong{display:block;color:#e8edf2;margin-bottom:5px}.map-wrap{height:320px;border-radius:15px;overflow:hidden;border:1px solid #303943}.coords{display:grid;grid-template-columns:1fr 1fr;gap:9px}.hint{font-size:11px;color:#747f8d;line-height:1.5;margin-top:8px}.preview{padding:14px}.preview-head{display:flex;justify-content:space-between;align-items:center;padding:3px 4px 13px}.badge{font-size:11px;color:#95a0ad;border:1px solid #303944;padding:5px 8px;border-radius:999px}.canvas-box{background:#050607;border-radius:15px;min-height:620px;display:flex;align-items:center;justify-content:center;overflow:auto}.canvas-box canvas{max-width:100%;height:auto;display:block}.empty{color:#687382;text-align:center;padding:80px 20px}.small{font-size:12px;color:#8994a0;line-height:1.5}@media(max-width:900px){.grid{grid-template-columns:1fr}.canvas-box{min-height:400px}.title{font-size:34px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div>
+      <div class="eyebrow">GPS Map Camera</div>
+      <h1 class="title">Geo-tag your photo.</h1>
+      <p class="sub">Upload a photo, choose a point on the map, set the timestamp and generate a custom field-ready GPS stamp directly in the browser.</p>
+    </div>
+    <div class="badge">No server upload</div>
+  </div>
+
+  <div class="grid">
+    <aside class="panel">
+      <div class="section">
+        <h3>1. Photo</h3>
+        <label class="upload">
+          <input id="photoInput" type="file" accept="image/*" />
+          <strong>Choose photo</strong>
+          <span id="photoName">JPG, PNG or WebP</span>
+        </label>
+      </div>
+
+      <div class="section">
+        <h3>2. Location</h3>
+        <div id="map" class="map-wrap"></div>
+        <div class="coords" style="margin-top:9px">
+          <div class="field"><label>Latitude</label><input id="lat" type="number" step="0.000001" value="23.978530" /></div>
+          <div class="field"><label>Longitude</label><input id="lng" type="number" step="0.000001" value="85.359895" /></div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="locateBtn">Use my location</button>
+          <button class="btn" id="centerBtn">Update map</button>
+        </div>
+        <p class="hint">Click anywhere on the map to move the marker and copy the coordinates into the photo.</p>
+      </div>
+
+      <div class="section">
+        <h3>3. Details</h3>
+        <div class="field"><label>Place / title</label><input id="place" value="Hazaribagh, Jharkhand, India" /></div>
+        <div class="field"><label>Address</label><input id="address" value="Sri RamaKrishna Sarada Ashrama Teacher's Training College, Hurhuru, Hazaribagh, Jharkhand 825301, India" /></div>
+        <div class="field"><label>Date & time</label><input id="datetime" type="datetime-local" /></div>
+        <div class="field"><label>Timezone label</label><input id="tz" value="GMT +05:30" /></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="generateBtn">Generate stamp</button>
+        <button class="btn" id="downloadBtn" disabled>Download image</button>
+      </div>
+    </aside>
+
+    <section class="preview">
+      <div class="preview-head"><div><strong>Preview</strong><div class="small">Reference-style dark translucent information block</div></div><div class="badge" id="status">Waiting for photo</div></div>
+      <div class="canvas-box" id="canvasBox"><div class="empty">Upload a photo to begin.<br/>Your original file stays in your browser.</div><canvas id="canvas" hidden></canvas></div>
+    </section>
+  </div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const photoInput=$('photoInput'), photoName=$('photoName'), lat=$('lat'), lng=$('lng'), place=$('place'), address=$('address'), datetime=$('datetime'), tz=$('tz'), canvas=$('canvas'), status=$('status');
+let image=null, marker=null, map=null;
+const initial=[Number(lat.value),Number(lng.value)];
+map=L.map('map',{zoomControl:true}).setView(initial,15);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+marker=L.marker(initial,{draggable:true}).addTo(map);
+function syncFromMarker(){const p=marker.getLatLng();lat.value=p.lat.toFixed(6);lng.value=p.lng.toFixed(6)}
+marker.on('dragend',syncFromMarker);
+map.on('click',(e)=>{marker.setLatLng(e.latlng);syncFromMarker()});
+$('centerBtn').onclick=()=>{const p=[Number(lat.value),Number(lng.value)];if(Number.isFinite(p[0])&&Number.isFinite(p[1])){marker.setLatLng(p);map.setView(p,16)}};
+$('locateBtn').onclick=()=>navigator.geolocation?.getCurrentPosition((pos)=>{lat.value=pos.coords.latitude.toFixed(6);lng.value=pos.coords.longitude.toFixed(6);$('centerBtn').click()},()=>alert('Location permission was not available.'));
+const now=new Date(); const local=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16); datetime.value=local;
+photoInput.onchange=()=>{const f=photoInput.files?.[0];if(!f)return; photoName.textContent=f.name; const r=new FileReader();r.onload=()=>{image=new Image();image.onload=()=>{status.textContent='Ready';generate()};image.src=r.result};r.readAsDataURL(f)};
+function wrapText(ctx,text,maxWidth){const words=text.split(/\\s+/);const lines=[];let line='';for(const w of words){const test=line?line+' '+w:w;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=w}else line=test}if(line)lines.push(line);return lines}
+function formatCoords(v){return Number(v).toFixed(5)+'°'}
+function generate(){if(!image)return; const pad=Math.max(24,Math.round(image.width*.022)); const panelH=Math.max(165,Math.round(image.width*.16)); const mapSize=Math.min(165,Math.round(panelH*.82)); canvas.width=image.width;canvas.height=image.height;
+ const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0,canvas.width,canvas.height); const x=pad,y=canvas.height-panelH-pad,w=canvas.width-pad*2,h=panelH; ctx.fillStyle='rgba(13,16,21,.84)';roundRect(ctx,x,y,w,h,12);ctx.fill();
+ const left=x+18, top=y+16, textW=w-mapSize-60; const titleSize=Math.max(18,Math.round(image.width*.024));ctx.font='800 '+titleSize+'px Inter, sans-serif';ctx.fillStyle='#f4f6f8';ctx.fillText(place.value,left,top+titleSize);
+ ctx.font='500 '+Math.max(11,Math.round(titleSize*.62))+'px Inter, sans-serif';ctx.fillStyle='#eef1f4'; const lines=wrapText(ctx,address.value,textW); lines.slice(0,2).forEach((t,i)=>ctx.fillText(t,left,top+titleSize+24+i*(titleSize*.75)));
+ const base=top+titleSize+24+Math.min(2,lines.length)*(titleSize*.75)+8;ctx.font='500 '+Math.max(11,Math.round(titleSize*.64))+'px Inter, sans-serif';ctx.fillText('Lat '+formatCoords(lat.value),left,base);ctx.fillText('Long '+formatCoords(lng.value),left,base+24);
+ const d=new Date(datetime.value); const dateText=d.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'2-digit'}); const timeText=d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});ctx.fillText(dateText+' '+timeText+' '+tz.value,left,base+48);
+ drawMiniMap(ctx,x+w-mapSize-14,y+12,mapSize,mapSize,Number(lat.value),Number(lng.value));
+ ctx.font='700 '+Math.max(10,Math.round(titleSize*.5))+'px Inter, sans-serif';ctx.fillStyle='#f4f6f8';ctx.fillText('◉  GPS MAP CAMERA',x+w-154,y+panelH-13);
+ canvas.hidden=false;$('canvasBox').querySelector('.empty')?.remove();$('downloadBtn').disabled=false;status.textContent='Generated';}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function drawMiniMap(ctx,x,y,w,h,la,lo){ctx.save();roundRect(ctx,x,y,w,h,8);ctx.clip();ctx.fillStyle='#293238';ctx.fillRect(x,y,w,h);ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=2;for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(x+i*w/5,y);ctx.lineTo(x+(i+.3)*w/5,y+h);ctx.stroke()}for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(x,y+i*h/5);ctx.lineTo(x+w,y+(i+.6)*h/5);ctx.stroke()}ctx.strokeStyle='#dce4e9';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x+w*.18,y+h*.78);ctx.quadraticCurveTo(x+w*.5,y+h*.45,x+w*.85,y+h*.2);ctx.stroke();ctx.fillStyle='#e53935';ctx.beginPath();ctx.arc(x+w*.54,y+h*.46,9,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x+w*.54,y+h*.46,3,0,Math.PI*2);ctx.fill();ctx.restore();ctx.fillStyle='rgba(0,0,0,.65)';ctx.fillRect(x,y+h-21,w,21);ctx.fillStyle='#fff';ctx.font='700 12px Inter, sans-serif';ctx.fillText('Google / Map',x+7,y+h-7);}
+$('generateBtn').onclick=generate;
+$('downloadBtn').onclick=()=>{if(!canvas.width)return;const a=document.createElement('a');a.download='geo-tagged-photo.jpg';a.href=canvas.toDataURL('image/jpeg',.95);a.click()};
+[lat,lng,place,address,datetime,tz].forEach(el=>el.addEventListener('input',()=>{if(image)generate()}));
+</script>
+</body>
+</html>
