@@ -29,6 +29,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Inject GPS Map Camera stamp alignment
+        run: python3 - <<'PY'
+          from pathlib import Path
+          p = Path('src/pages/index.astro')
+          s = p.read_text()
+          marker = '<link rel="stylesheet" href="/geo-tag/gps-camera-reference.css">'
+          if marker not in s:
+              s = s.replace('</head>', marker + '</head>')
+              p.write_text(s)
+          PY
+
       - name: Build Astro site
         run: npm run build
 
