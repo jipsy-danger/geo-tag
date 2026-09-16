@@ -1,0 +1,99 @@
+/* Final GPS Map Camera stamp alignment pass. This stylesheet intentionally overrides only the stamp. */
+.stamp{
+  left:1.75%!important;
+  bottom:2.4%!important;
+  width:84.4%!important;
+  aspect-ratio:5.95/1!important;
+  gap:1.15%!important;
+  align-items:stretch!important;
+}
+.stampMap{
+  height:100%!important;
+  width:auto!important;
+  aspect-ratio:1/1!important;
+  flex:0 0 auto!important;
+  border-radius:7% 0 0 7%!important;
+}
+.stampMap img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+.stampInfo{
+  position:relative!important;
+  height:100%!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  padding:0!important;
+  border-radius:2.5%!important;
+  background:rgba(18,21,24,.68)!important;
+  overflow:hidden!important;
+  color:#fff!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+}
+.stampInfo .badgeLogo{
+  position:absolute!important;
+  top:4%!important;
+  right:1.5%!important;
+  width:15%!important;
+  height:auto!important;
+  max-height:25%!important;
+  object-fit:contain!important;
+  object-position:right top!important;
+  display:block!important;
+}
+.stampInfo .title,
+.stampInfo .addr,
+.stampInfo #stampLat,
+.stampInfo #stampLng,
+.stampInfo #stampTime{
+  position:absolute!important;
+  left:2.2%!important;
+  right:1.5%!important;
+  margin:0!important;
+  padding:0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+.stampInfo .title{
+  top:7%!important;
+  right:19%!important;
+  font-size:clamp(13px,1vw,19px)!important;
+  line-height:1.05!important;
+  font-weight:400!important;
+}
+.stampInfo .addr{
+  top:29%!important;
+  font-size:clamp(8px,.66vw,13px)!important;
+  line-height:1.05!important;
+  font-weight:400!important;
+}
+.stampInfo #stampLat{
+  top:51%!important;
+  font-size:clamp(8px,.58vw,12px)!important;
+  line-height:1!important;
+  font-weight:400!important;
+}
+.stampInfo #stampLng{
+  top:67%!important;
+  font-size:clamp(8px,.58vw,12px)!important;
+  line-height:1!important;
+  font-weight:400!important;
+}
+.stampInfo #stampTime{
+  top:83%!important;
+  font-size:clamp(8px,.58vw,12px)!important;
+  line-height:1!important;
+  font-weight:400!important;
+}
+.stampInfo .pin{z-index:2}
+@media(max-width:900px){
+  .stamp{left:2%!important;width:96%!important;aspect-ratio:5.95/1!important}
+  .stampInfo .title{font-size:clamp(10px,2.6vw,18px)!important}
+  .stampInfo .addr{font-size:clamp(7px,1.55vw,11px)!important}
+  .stampInfo #stampLat,.stampInfo #stampLng,.stampInfo #stampTime{font-size:clamp(7px,1.35vw,10px)!important}
+  .stampInfo .badgeLogo{width:16%!important}
+}
