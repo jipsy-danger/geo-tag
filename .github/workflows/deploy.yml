@@ -30,7 +30,8 @@ jobs:
         run: npm install
 
       - name: Inject GPS Map Camera stamp alignment
-        run: python3 - <<'PY'
+        run: |
+          python3 - <<'PY'
           from pathlib import Path
           p = Path('src/pages/index.astro')
           s = p.read_text()
