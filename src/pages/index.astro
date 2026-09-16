@@ -3,224 +3,54 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GPS Map Camera</title>
-  <meta name="description" content="Create GPS Map Camera style geotagged photos with a real satellite map." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <style>
-    :root{font-family:Inter,Arial,sans-serif;color:#eef2f5;background:#080a0d}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:radial-gradient(circle at 80% -10%,#28313b 0,#11161c 38%,#080a0d 72%)}
-    main{max-width:1280px;margin:auto;padding:34px 22px 60px}
-    .top{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:22px}
-    .eyebrow{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#9aa5b1}
-    h1{font-size:40px;line-height:1;margin:8px 0;letter-spacing:-.045em}
-    .sub{max-width:760px;margin:0;color:#aab4bf;line-height:1.55;font-size:14px}
-    .pill{border:1px solid #303944;color:#9ca7b3;border-radius:999px;padding:7px 10px;font-size:10px;white-space:nowrap}
-    .grid{display:grid;grid-template-columns:365px minmax(0,1fr);gap:20px}
-    .panel,.preview{border:1px solid #29313a;background:rgba(14,18,23,.93);border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.34)}
-    .panel{padding:18px}.preview{padding:13px}
-    .section{padding-bottom:17px;margin-bottom:17px;border-bottom:1px solid #252c34}
-    .section h2{font-size:11px;margin:0 0 10px;color:#d7dde3;letter-spacing:.05em}
-    .upload{display:block;border:1px dashed #48535f;background:#0a0e13;border-radius:14px;padding:20px;text-align:center;cursor:pointer;color:#8d98a4}
-    .upload input{display:none}.upload strong{display:block;color:#f0f3f6;font-size:13px;margin-bottom:5px}.upload span{font-size:10px;word-break:break-all}
-    #map{height:300px;border-radius:13px;overflow:hidden;border:1px solid #303943}
-    .coords{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
-    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:9px}.field label{font-size:10px;color:#84909c}
-    input{width:100%;background:#090c10;color:#edf1f4;border:1px solid #303943;border-radius:10px;padding:10px 11px;outline:none;font:500 12px Inter,Arial,sans-serif}input:focus{border-color:#707c89}
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{border:1px solid #37414c;background:#12171d;color:#edf1f4;border-radius:10px;padding:10px 11px;font:700 11px Inter,Arial,sans-serif;cursor:pointer}.btn.primary{background:#f1f4f6;color:#0a0d11;border-color:#f1f4f6}.btn:disabled{opacity:.35;cursor:not-allowed}
-    .hint,.statusline{font-size:10px;line-height:1.5;color:#707b87}.statusline{min-height:15px;margin-top:8px}
-    .preview-head{display:flex;justify-content:space-between;align-items:center;padding:3px 4px 12px}.preview-head strong{font-size:13px}.small{font-size:10px;color:#7e8995;margin-top:3px}
-    .canvas-box{min-height:680px;border-radius:13px;background:#030405;display:flex;align-items:center;justify-content:center;overflow:auto;padding:12px}.canvas-box canvas{max-width:100%;height:auto;display:block;border-radius:7px}.empty{color:#65717e;text-align:center;font-size:12px;line-height:1.8;padding:100px 20px}
-    .leaflet-control-attribution{font-size:8px!important}.leaflet-control-layers{font-size:11px}
-    @media(max-width:900px){.grid{grid-template-columns:1fr}.canvas-box{min-height:420px}h1{font-size:34px}.top{align-items:start;flex-direction:column}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GPS Map Camera</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#080b0f;color:#f4f5f6;font-family:Arial,Helvetica,sans-serif}body{min-height:100vh}.shell{max-width:1250px;margin:auto;padding:28px 22px 55px}.top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px}.kicker{font-size:11px;letter-spacing:.18em;font-weight:700;color:#87929d}.top h1{font-size:38px;margin:7px 0 8px;letter-spacing:-.04em}.top p{margin:0;color:#9ca7b2;font-size:14px}.live{border:1px solid #34404b;border-radius:99px;padding:7px 11px;font-size:10px;color:#9ba6b0}.layout{display:grid;grid-template-columns:350px 1fr;gap:18px}.card{background:#10151b;border:1px solid #28313a;border-radius:18px;box-shadow:0 25px 70px #0008}.controls{padding:16px}.block{padding-bottom:15px;margin-bottom:15px;border-bottom:1px solid #252d35}.block h2{font-size:10px;margin:0 0 9px;letter-spacing:.06em}.upload{display:block;border:1px dashed #4b5662;border-radius:12px;background:#0b0f14;padding:18px;text-align:center;cursor:pointer}.upload input{display:none}.upload b{display:block;font-size:13px;margin-bottom:4px}.upload span{font-size:10px;color:#7e8994}.cameraBtns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.btn{border:1px solid #37424e;background:#151b21;color:#f2f4f5;border-radius:9px;padding:10px 9px;font-size:11px;font-weight:700;cursor:pointer}.btn.primary{background:#f4f5f6;color:#0b0e12}.btn:disabled{opacity:.35;cursor:not-allowed}#map{height:285px;border-radius:12px;overflow:hidden;border:1px solid #303a44}.coords{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.field{margin-top:8px}.field label{display:block;color:#7f8a95;font-size:9px;margin-bottom:5px}.field input{width:100%;border:1px solid #303a44;background:#090d12;color:#f2f4f5;border-radius:8px;padding:9px;font-size:11px;outline:none}.status{font-size:10px;color:#75818c;min-height:14px;margin-top:7px}.hint{font-size:9px;color:#68747f;line-height:1.5}.preview{padding:12px}.previewHead{height:34px;display:flex;justify-content:space-between;align-items:center}.previewHead b{font-size:12px}.previewHead small{display:block;color:#68747f;font-size:9px;margin-top:2px}.stage{position:relative;background:#020304;border-radius:11px;overflow:hidden;min-height:690px;display:flex;align-items:center;justify-content:center}.media{position:relative;max-width:100%;max-height:690px;overflow:hidden}.media video,.media img{display:block;max-width:100%;max-height:690px;width:auto;height:auto;object-fit:contain}.media video{background:#000}.stamp{position:absolute;left:1.1%;top:2.4%;right:1.1%;display:flex;align-items:stretch;pointer-events:none;filter:drop-shadow(0 3px 7px #0008)}.stampMap{width:16.5%;aspect-ratio:1/1;min-width:90px;overflow:hidden;background:#3b4939;border-radius:3px;position:relative}.stampMap img{width:100%;height:100%;object-fit:cover}.pin{position:absolute;left:50%;top:50%;width:17px;height:17px;background:#e8332e;border:2px solid #fff;border-radius:50% 50% 50% 0;transform:translate(-50%,-65%) rotate(-45deg);box-shadow:0 1px 3px #0008}.pin:after{content:"";position:absolute;width:5px;height:5px;background:#fff;border-radius:50%;left:4px;top:4px}.mapCredit{position:absolute;bottom:2px;left:4px;font-size:9px;color:#fff;text-shadow:0 1px 2px #000}.stampInfo{flex:1;background:rgba(20,24,29,.82);border-radius:4px;padding:1.7% 1.35%;min-width:0;position:relative}.title{font-size:clamp(13px,2.1vw,30px);font-weight:700;line-height:1.08;padding-right:24%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.addr{font-size:clamp(7px,1vw,15px);line-height:1.2;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:2%}.coord{font-size:clamp(8px,1.05vw,15px);line-height:1.35;margin-top:4px}.time{font-size:clamp(8px,1.05vw,15px);margin-top:4px}.badge{position:absolute;right:1.5%;top:5%;display:flex;align-items:center;gap:5px;font-size:clamp(9px,1.1vw,16px);font-weight:700;white-space:nowrap}.badgeIcon{width:clamp(17px,1.7vw,26px);height:clamp(17px,1.7vw,26px);border-radius:5px;background:linear-gradient(145deg,#2c9be9,#1f6ed2);position:relative}.badgeIcon:after{content:"";position:absolute;left:5px;top:5px;width:7px;height:7px;border:2px solid #ffd63b;border-radius:50%}.empty{color:#697580;font-size:11px;text-align:center;padding:90px}.captureRow{display:flex;gap:8px;justify-content:center;position:absolute;bottom:18px;left:0;right:0}.capture{width:58px;height:58px;border-radius:50%;border:4px solid #fff;background:#fff8;box-shadow:0 2px 10px #0009;cursor:pointer}.capture span{display:block;width:43px;height:43px;background:#fff;border-radius:50%;margin:auto}.mode{position:absolute;top:14px;left:14px;background:#0009;border:1px solid #fff3;color:#fff;padding:6px 9px;border-radius:99px;font-size:9px}.leaflet-control-attribution{font-size:7px!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.stage{min-height:450px}.top{align-items:flex-start;gap:10px;flex-direction:column}}
+</style>
 </head>
 <body>
-<main>
-  <header class="top">
-    <div>
-      <div class="eyebrow">GPS Map Camera</div>
-      <h1>Real photo. Real GPS. Real map.</h1>
-      <p class="sub">Create the same horizontal GPS camera stamp style as the reference: a real satellite map on the left, translucent information panel on the right, coordinates, address, date and time.</p>
-    </div>
-    <div class="pill">100% browser processing</div>
-  </header>
-
-  <div class="grid">
-    <aside class="panel">
-      <div class="section">
-        <h2>01 · PHOTO</h2>
-        <label class="upload">
-          <input id="photoInput" type="file" accept="image/*" />
-          <strong>Choose photo</strong>
-          <span id="photoName">JPG, PNG or WebP</span>
-        </label>
-      </div>
-
-      <div class="section">
-        <h2>02 · LOCATION</h2>
-        <div id="map"></div>
-        <div class="coords">
-          <div class="field"><label>Latitude</label><input id="lat" type="number" step="0.000001" value="23.978530" /></div>
-          <div class="field"><label>Longitude</label><input id="lng" type="number" step="0.000001" value="85.359895" /></div>
-        </div>
-        <div class="actions">
-          <button class="btn" id="gpsBtn">Use device GPS</button>
-          <button class="btn" id="mapBtn">Update map</button>
-        </div>
-        <div class="statusline" id="locationStatus">Drag the pin or click the map.</div>
-        <p class="hint">The exported stamp uses real satellite tiles centred on the selected coordinate. Address is reverse-geocoded automatically.</p>
-      </div>
-
-      <div class="section">
-        <h2>03 · STAMP DATA</h2>
-        <div class="field"><label>Place / title</label><input id="place" value="Hazaribagh, Jharkhand, India" /></div>
-        <div class="field"><label>Address</label><input id="address" value="Sri RamaKrishna Sarada Ashrama Teacher's Training College, Hurhuru, Hazaribagh, Jharkhand 825301, India" /></div>
-        <div class="field"><label>Date & time</label><input id="datetime" type="datetime-local" /></div>
-        <div class="field"><label>Timezone label</label><input id="tz" value="GMT +05:30" /></div>
-        <div class="field"><label>Map zoom</label><input id="zoom" type="number" min="10" max="19" value="17" /></div>
-      </div>
-
-      <div class="actions">
-        <button class="btn primary" id="generateBtn">Generate GPS photo</button>
-        <button class="btn" id="downloadBtn" disabled>Download JPEG</button>
-      </div>
-    </aside>
-
-    <section class="preview">
-      <div class="preview-head">
-        <div><strong>Output preview</strong><div class="small">Reference layout: satellite map + dark translucent panel + GPS data</div></div>
-        <div class="pill" id="status">Waiting for photo</div>
-      </div>
-      <div class="canvas-box" id="canvasBox">
-        <div class="empty">Choose a photo to begin.<br />The generated image will use the actual photo dimensions.</div>
-        <canvas id="canvas" hidden></canvas>
-      </div>
-    </section>
-  </div>
-</main>
-
+<div class="shell">
+<header class="top"><div><div class="kicker">GPS MAP CAMERA</div><h1>Real-time geotag camera</h1><p>Live camera + live GPS + real satellite map + automatic location data.</p></div><div class="live" id="gpsState">GPS waiting</div></header>
+<div class="layout">
+<aside class="card controls">
+<div class="block"><h2>01 · CAMERA</h2><div class="cameraBtns"><button class="btn primary" id="startCamera">Open camera</button><button class="btn" id="stopCamera">Stop camera</button></div><label class="upload"><input id="photo" type="file" accept="image/*"/><b>Upload existing photo</b><span id="fileName">Use camera or choose a local image</span></label></div>
+<div class="block"><h2>02 · LIVE LOCATION</h2><div id="map"></div><div class="coords"><div class="field"><label>Latitude</label><input id="lat" type="number" step="0.000001" value="23.978530"></div><div class="field"><label>Longitude</label><input id="lng" type="number" step="0.000001" value="85.359895"></div></div><div class="cameraBtns"><button class="btn" id="gps">Start live GPS</button><button class="btn" id="update">Update map</button></div><div class="status" id="locationStatus">Click map, drag pin, or start GPS.</div></div>
+<div class="block"><h2>03 · REAL STAMP DATA</h2><div class="field"><label>Place</label><input id="place" value="Hazaribagh, Jharkhand, India"></div><div class="field"><label>Address</label><input id="address" value="Sri RamaKrishna Sarada Ashrama Teacher's Training College, Hurhuru, Hazaribagh, Jharkhand 825301, India"></div><div class="field"><label>Date & time</label><input id="date" type="datetime-local"></div><div class="field"><label>Timezone</label><input id="zone" value="GMT +05:30"></div><p class="hint">GPS updates continuously while the page is open. The address is reverse-geocoded after a location change.</p></div>
+<div class="cameraBtns"><button class="btn primary" id="capture">Capture stamped photo</button><button class="btn" id="download" disabled>Download JPEG</button></div>
+</aside>
+<section class="card preview"><div class="previewHead"><div><b>Live camera preview</b><small id="previewText">Allow camera permission to shoot like a GPS camera.</small></div><div class="live" id="modeText">LIVE</div></div><div class="stage" id="stage"><div class="empty" id="empty">Open camera or upload a photo.<br>GPS data and timestamp will appear on the real image.</div><div class="media" id="media" hidden><video id="video" playsinline autoplay muted></video><img id="photoPreview" alt="" hidden><div class="stamp"><div class="stampMap"><img id="stampMap" alt="Satellite map"><div class="pin"></div><div class="mapCredit">Satellite</div></div><div class="stampInfo"><div class="title" id="stampPlace">Hazaribagh, Jharkhand, India</div><div class="addr" id="stampAddress">Sri RamaKrishna Sarada Ashrama Teacher's Training College, Hurhuru, Hazaribagh, Jharkhand 825301, India</div><div class="coord" id="stampLat">Lat 23.97853°</div><div class="coord" id="stampLng">Long 85.359895°</div><div class="time" id="stampTime">16/09/26 03:00 PM GMT +05:30</div><div class="badge"><span class="badgeIcon"></span>GPS Map Camera</div></div></div></div><div class="mode" id="accuracy">NO GPS</div><div class="captureRow"><button class="capture" id="shutter" title="Capture"><span></span></button></div></div></section>
+</div></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js"></script>
 <script>
-const $=id=>document.getElementById(id);
-const photoInput=$("photoInput"),photoName=$("photoName"),lat=$("lat"),lng=$("lng"),place=$("place"),address=$("address"),datetime=$("datetime"),tz=$("tz"),zoomInput=$("zoom"),canvas=$("canvas"),status=$("status"),locationStatus=$("locationStatus");
-let sourceImage=null,marker,map,rendering=false,rerender=false,geocodeTimer;
-const start=[Number(lat.value),Number(lng.value)];
-
-map=L.map("map",{zoomControl:true}).setView(start,17);
-const street=L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"});
-const satellite=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles &copy; Esri"}).addTo(map);
-L.control.layers({"Satellite":satellite,"Street":street},null,{collapsed:true}).addTo(map);
-marker=L.marker(start,{draggable:true}).addTo(map);
-
-function valid(){const a=Number(lat.value),b=Number(lng.value);return Number.isFinite(a)&&Number.isFinite(b)&&a>=-90&&a<=90&&b>=-180&&b<=180}
-function syncFromMap(){const p=marker.getLatLng();lat.value=p.lat.toFixed(6);lng.value=p.lng.toFixed(6);reverseGeocode(p.lat,p.lng);queueGenerate()}
-marker.on("dragend",syncFromMap);
-map.on("click",e=>{marker.setLatLng(e.latlng);syncFromMap()});
-
-$("mapBtn").onclick=()=>{if(!valid())return;const p=[Number(lat.value),Number(lng.value)];marker.setLatLng(p);map.setView(p,Number(zoomInput.value)||17);reverseGeocode(p[0],p[1]);queueGenerate()};
-$("gpsBtn").onclick=()=>{
-  if(!navigator.geolocation){locationStatus.textContent="Device geolocation is not supported.";return}
-  locationStatus.textContent="Getting high-accuracy GPS…";
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const a=pos.coords.latitude,b=pos.coords.longitude;lat.value=a.toFixed(6);lng.value=b.toFixed(6);marker.setLatLng([a,b]);map.setView([a,b],18);reverseGeocode(a,b);locationStatus.textContent="Device GPS acquired ("+(pos.coords.accuracy?Math.round(pos.coords.accuracy)+" m accuracy":"high accuracy")+").";queueGenerate();
-  },()=>locationStatus.textContent="GPS permission denied or unavailable.",{enableHighAccuracy:true,timeout:20000,maximumAge:0});
-};
-
-function setNow(){const d=new Date();datetime.value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}setNow();
-photoInput.onchange=()=>{const f=photoInput.files&&photoInput.files[0];if(!f)return;photoName.textContent=f.name;status.textContent="Loading photo…";const r=new FileReader();r.onload=()=>{sourceImage=new Image();sourceImage.onload=()=>{status.textContent="Ready";generate()};sourceImage.onerror=()=>status.textContent="Invalid image";sourceImage.src=r.result};r.readAsDataURL(f)};
-
-async function reverseGeocode(a,b){
-  clearTimeout(geocodeTimer);
-  geocodeTimer=setTimeout(async()=>{
-    locationStatus.textContent="Finding address…";
-    try{
-      const res=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(a)}&lon=${encodeURIComponent(b)}&zoom=18&addressdetails=1`,{headers:{Accept:"application/json"}});
-      if(!res.ok)throw new Error("reverse geocode failed");
-      const data=await res.json(),x=data.address||{};
-      const city=x.city||x.town||x.village||x.municipality||x.county||"";
-      const state=x.state||"",country=x.country||"";
-      const title=[city,state,country].filter(Boolean).join(", ");
-      if(title)place.value=title;
-      if(data.display_name)address.value=data.display_name;
-      locationStatus.textContent="Address updated automatically.";
-      queueGenerate();
-    }catch(e){locationStatus.textContent="GPS ready; address lookup unavailable."}
-  },300);
-}
-
-function queueGenerate(){if(!sourceImage)return;if(rendering){rerender=true;return}generate()}
-function fitFont(ctx,text,maxWidth,start,min){let size=start;while(size>min){ctx.font=`600 ${size}px Arial,sans-serif`;if(ctx.measureText(text).width<=maxWidth)return size;size--}return min}
-function wrap(ctx,text,maxWidth,maxLines){const words=String(text||"").trim().split(/\s+/);const lines=[];let line="";for(const word of words){const test=line?line+" "+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;if(lines.length===maxLines-1)break}else line=test}if(line&&lines.length<maxLines)lines.push(line);return lines}
-function rounded(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
-function tileXY(a,b,z){const n=2**z,xx=(b+180)/360*n,rad=a*Math.PI/180,yy=(1-Math.asinh(Math.tan(rad))/Math.PI)/2*n;return{x:xx,y:yy}}
-function tileUrl(z,x,y){const n=2**z;if(y<0||y>=n)return null;const xx=((x%n)+n)%n;return `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${xx}`}
-function getTile(url){return new Promise(resolve=>{if(!url)return resolve(null);const im=new Image();im.crossOrigin="anonymous";im.onload=()=>resolve(im);im.onerror=()=>resolve(null);im.src=url})}
-async function drawSatellite(ctx,x,y,w,h,a,b,z){
-  const size=256,center=tileXY(a,b,z),cx=center.x*size,cy=center.y*size,left=cx-w/2,top=cy-h/2;
-  ctx.save();rounded(ctx,x,y,w,h,5);ctx.clip();ctx.fillStyle="#4c5b48";ctx.fillRect(x,y,w,h);
-  const x0=Math.floor(left/size)-1,x1=Math.floor((left+w)/size)+1,y0=Math.floor(top/size)-1,y1=Math.floor((top+h)/size)+1;
-  const jobs=[];for(let ty=y0;ty<=y1;ty++)for(let tx=x0;tx<=x1;tx++){const u=tileUrl(z,tx,ty);jobs.push(Promise.resolve(getTile(u)).then(im=>({im,tx,ty})))}
-  const tiles=await Promise.all(jobs);for(const t of tiles)if(t.im)ctx.drawImage(t.im,t.tx*size-left+x,t.ty*size-top+y,size,size);
-  ctx.restore();
-  // red location pin, deliberately styled like the reference image
-  const px=x+w*.50,py=y+h*.49;ctx.save();ctx.fillStyle="#e52d2d";ctx.beginPath();ctx.moveTo(px,py+20);ctx.bezierCurveTo(px-7,py+9,px-12,py+3,px-12,py-5);ctx.arc(px,py-5,12,Math.PI,0);ctx.bezierCurveTo(px+12,py+3,px+7,py+9,px,py+20);ctx.fill();ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(px,py-5,4.2,0,Math.PI*2);ctx.fill();ctx.restore();
-  ctx.fillStyle="rgba(0,0,0,.45)";ctx.fillRect(x,y+h-28,w,28);ctx.font=`700 ${Math.max(11,Math.round(w*.065))}px Arial,sans-serif`;ctx.fillStyle="#fff";ctx.fillText("Google",x+10,y+h-7);
-}
-
-async function generate(){
-  if(!sourceImage)return;if(rendering){rerender=true;return}rendering=true;rerender=false;status.textContent="Rendering real satellite map…";
-  try{
-    const W=sourceImage.naturalWidth||sourceImage.width,H=sourceImage.naturalHeight||sourceImage.height;canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.drawImage(sourceImage,0,0,W,H);
-    // Reference proportions: map at far left, wide translucent panel immediately beside it, near the top.
-    const margin=Math.max(10,Math.round(W*.012));
-    const stampH=Math.max(145,Math.min(Math.round(W*.175),Math.round(H*.72)));
-    const mapSize=Math.min(stampH-2,Math.max(130,Math.round(W*.166)));
-    const mapX=margin,mapY=margin;
-    const panelX=mapX+mapSize+Math.max(16,Math.round(W*.018));
-    const panelY=mapY,panelW=W-panelX-margin,panelH=stampH;
-    // Slight shadow behind the complete stamp.
-    ctx.save();ctx.shadowColor="rgba(0,0,0,.30)";ctx.shadowBlur=Math.max(8,W*.012);ctx.shadowOffsetY=2;ctx.fillStyle="rgba(0,0,0,.02)";ctx.fillRect(mapX,mapY,mapSize,mapSize);rounded(ctx,panelX,panelY,panelW,panelH,9);ctx.fillStyle="rgba(24,28,34,.80)";ctx.fill();ctx.restore();
-    await drawSatellite(ctx,mapX,mapY,mapSize,mapSize,Number(lat.value),Number(lng.value),Math.max(10,Math.min(19,Number(zoomInput.value)||17)));
-    // Dark translucent information panel exactly to the right of the square map.
-    ctx.save();rounded(ctx,panelX,panelY,panelW,panelH,9);ctx.fillStyle="rgba(20,24,29,.79)";ctx.fill();ctx.restore();
-    const padX=Math.max(15,Math.round(W*.013));let tx=panelX+padX,ty=panelY+Math.max(17,Math.round(stampH*.10));
-    const logoW=Math.max(175,Math.round(panelW*.22));const contentW=panelW-padX*2;
-    const titleSize=Math.max(18,Math.min(32,Math.round(stampH*.145)));
-    ctx.fillStyle="#f4f5f6";ctx.font=`700 ${titleSize}px Arial,sans-serif`;const titleLines=wrap(ctx,place.value,contentW-logoW,1);ctx.fillText(titleLines[0]||"",tx,ty+titleSize);
-    // Small GPS Map Camera badge in the upper-right, matching the reference placement.
-    const badgeX=panelX+panelW-logoW-padX/2,badgeY=panelY+Math.max(6,Math.round(stampH*.025));
-    ctx.save();ctx.fillStyle="rgba(38,42,47,.92)";rounded(ctx,badgeX,badgeY,logoW,Math.max(42,Math.round(stampH*.24)),5);ctx.fill();
-    const iconS=Math.max(25,Math.round(stampH*.19));ctx.fillStyle="#2b8eea";rounded(ctx,badgeX+7,badgeY+7,iconS,iconS,7);ctx.fill();ctx.fillStyle="#ffd33d";ctx.beginPath();ctx.arc(badgeX+7+iconS/2,badgeY+7+iconS/2,iconS*.27,0,Math.PI*2);ctx.fill();ctx.fillStyle="#ef4b3e";ctx.beginPath();ctx.arc(badgeX+7+iconS/2,badgeY+7+iconS*.36,iconS*.11,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.font=`800 ${Math.max(12,Math.round(stampH*.10))}px Arial,sans-serif`;ctx.fillText("GPS Map Camera",badgeX+iconS+15,badgeY+iconS*.66);ctx.restore();
-    ctx.fillStyle="#f0f2f4";ctx.font=`400 ${Math.max(11,Math.round(titleSize*.62))}px Arial,sans-serif`;
-    const addressY=ty+titleSize+Math.max(9,Math.round(stampH*.055));const addressLines=wrap(ctx,address.value,contentW,2);addressLines.forEach((line,i)=>ctx.fillText(line,tx,addressY+i*Math.max(14,Math.round(stampH*.07))));
-    const infoY=addressY+addressLines.length*Math.max(14,Math.round(stampH*.07))+Math.max(6,Math.round(stampH*.025));const infoSize=Math.max(11,Math.round(titleSize*.62));ctx.font=`400 ${infoSize}px Arial,sans-serif`;ctx.fillStyle="#f2f3f4";
-    ctx.fillText(`Lat ${Number(lat.value).toFixed(5)}°`,tx,infoY);ctx.fillText(`Long ${Number(lng.value).toFixed(5)}°`,tx,infoY+Math.max(20,Math.round(stampH*.105)));
-    const d=new Date(datetime.value||Date.now());const date=d.toLocaleDateString("en-GB",{day:"2-digit",month:"2-digit",year:"2-digit"});const time=d.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",hour12:true});ctx.fillText(`${date} ${time} ${tz.value}`,tx,infoY+Math.max(40,Math.round(stampH*.21)));
-    canvas.hidden=false;$("canvasBox").querySelector(".empty")?.remove();$("downloadBtn").disabled=false;status.textContent="Generated";
-  }finally{rendering=false;if(rerender){rerender=false;generate()}}
-}
-
-function exifDataUrl(dataUrl){
-  if(typeof piexif==="undefined")return dataUrl;
-  try{
-    const a=Math.abs(Number(lat.value)),b=Math.abs(Number(lng.value));
-    const dms=v=>{const deg=Math.floor(v),m0=(v-deg)*60,min=Math.floor(m0),sec=Math.round((m0-min)*60*100);return [[deg,1],[min,1],[sec,100]]};
-    const d=new Date(datetime.value||Date.now()),p=n=>String(n).padStart(2,"0");
-    const exif={"0th":{"270":`${place.value} | ${address.value}`},"Exif":{"36867":`${d.getFullYear()}:${p(d.getMonth()+1)}:${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`},"GPS":{"1":Number(lat.value)>=0?"N":"S","2":dms(a),"3":Number(lng.value)>=0?"E":"W","4":dms(b),"29":`${d.getUTCFullYear()}:${p(d.getUTCMonth()+1)}:${p(d.getUTCDate())}`}};
-    return piexif.insert(piexif.dump(exif),dataUrl);
-  }catch(e){return dataUrl}
-}
-
-$("generateBtn").onclick=generate;
-$("downloadBtn").onclick=()=>{if(!canvas.width)return;status.textContent="Preparing JPEG…";const raw=canvas.toDataURL("image/jpeg",.96);const data=exifDataUrl(raw);const a=document.createElement("a");a.download="gps-map-camera.jpg";a.href=data;a.click();status.textContent="Downloaded"};
-[lat,lng,place,address,datetime,tz,zoomInput].forEach(el=>el.addEventListener("input",()=>{if(el===lat||el===lng){if(valid()){marker.setLatLng([Number(lat.value),Number(lng.value)]);map.panTo([Number(lat.value),Number(lng.value)])}}queueGenerate()}));
+const $=id=>document.getElementById(id);let stream=null,watch=null,map,marker,source=null,lastMapUrl='',lastFix=null,geoBusy=false;
+const lat=$("lat"),lng=$("lng"),place=$("place"),address=$("address"),date=$("date"),zone=$("zone"),video=$("video"),img=$("photoPreview"),media=$("media"),empty=$("empty");
+function now(){const d=new Date();date.value=new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}now();
+setInterval(()=>{if(!date.matches(':focus'))now();renderStamp()},1000);
+map=L.map('map').setView([+lat.value,+lng.value],17);const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'}).addTo(map);const street=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'});L.control.layers({'Satellite':sat,'Street':street}).addTo(map);marker=L.marker([+lat.value,+lng.value],{draggable:true}).addTo(map);
+function setPoint(a,b){lat.value=a.toFixed(6);lng.value=b.toFixed(6);marker.setLatLng([a,b]);map.setView([a,b],Math.max(16,map.getZoom()));reverse(a,b);refreshMap();renderStamp()}
+marker.on('dragend',()=>{const p=marker.getLatLng();setPoint(p.lat,p.lng)});map.on('click',e=>setPoint(e.latlng.lat,e.latlng.lng));
+$('update').onclick=()=>{const a=+lat.value,b=+lng.value;if(Number.isFinite(a)&&Number.isFinite(b))setPoint(a,b)};
+$('gps').onclick=()=>startGPS();
+function startGPS(){if(!navigator.geolocation){$('locationStatus').textContent='Geolocation is not supported.';return}if(watch!==null)navigator.geolocation.clearWatch(watch);$('gpsState').textContent='GPS active';$('locationStatus').textContent='Waiting for high-accuracy GPS…';watch=navigator.geolocation.watchPosition(pos=>{lastFix=pos;$('gpsState').textContent='GPS ±'+Math.round(pos.coords.accuracy||0)+' m';$('accuracy').textContent=(pos.coords.accuracy?Math.round(pos.coords.accuracy)+' m':'GPS');const a=pos.coords.latitude,b=pos.coords.longitude;lat.value=a.toFixed(6);lng.value=b.toFixed(6);marker.setLatLng([a,b]);map.panTo([a,b],{animate:false});reverse(a,b);refreshMap();renderStamp()},err=>{$('gpsState').textContent='GPS unavailable';$('locationStatus').textContent=err.message},{enableHighAccuracy:true,maximumAge:0,timeout:15000})}
+async function reverse(a,b){if(geoBusy)return;geoBusy=true;try{const r=await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+a+'&lon='+b+'&zoom=18&addressdetails=1');if(r.ok){const d=await r.json();if(d.display_name)address.value=d.display_name;const x=d.address||{};const c=x.city||x.town||x.village||x.municipality||x.county||'';const s=x.state||'';const co=x.country||'';if(c||s||co)place.value=[c,s,co].filter(Boolean).join(', ');$('locationStatus').textContent='Address updated from live coordinates.'}}catch(e){}geoBusy=false;renderStamp()}
+function refreshMap(){const z=Math.max(15,Math.min(19,map.getZoom()||17));const a=+lat.value,b=+lng.value;lastMapUrl='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox='+encodeURIComponent(b-.0015)+','+encodeURIComponent(a-.001)+','+encodeURIComponent(b+.0015)+','+encodeURIComponent(a+.001)+'&bboxSR=4326&size=900,900&imageSR=4326&format=jpg&f=image';$('stampMap').src=lastMapUrl}
+function stampText(){const d=new Date(date.value||Date.now());const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),yy=String(d.getFullYear()).slice(-2);let h=d.getHours(),ampm=h>=12?'PM':'AM';h=h%12||12;const t=String(h).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+' '+ampm;return dd+'/'+mm+'/'+yy+' '+t+' '+zone.value}
+function renderStamp(){$('stampPlace').textContent=place.value;$('stampAddress').textContent=address.value;$('stampLat').textContent='Lat '+(+lat.value).toFixed(5)+'°';$('stampLng').textContent='Long '+(+lng.value).toFixed(5)+'°';$('stampTime').textContent=stampText()}
+async function openCamera(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});video.srcObject=stream;video.hidden=false;img.hidden=true;media.hidden=false;empty.hidden=true;$('modeText').textContent='CAMERA LIVE';$('previewText').textContent='Live camera feed. GPS stamp follows the current fix.';startGPS();renderStamp()}catch(e){$('previewText').textContent='Camera permission was denied or unavailable. You can still upload a photo.'}}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}video.srcObject=null}
+$('startCamera').onclick=openCamera;$('stopCamera').onclick=stopCamera;
+$('photo').onchange=e=>{const f=e.target.files?.[0];if(!f)return;$('fileName').textContent=f.name;const r=new FileReader();r.onload=()=>{source=new Image();source.onload=()=>{img.src=source.src;img.hidden=false;video.hidden=true;media.hidden=false;empty.hidden=true;$('modeText').textContent='PHOTO';$('previewText').textContent='Uploaded photo with live GPS stamp.';renderStamp()};source.src=r.result};r.readAsDataURL(f)};
+$('capture').onclick=()=>capture();$('shutter').onclick=()=>capture();
+async function capture(){if(!source&&!stream&&video.readyState<2){$('previewText').textContent='Open the camera or upload a photo first.';return}const base=source||video;const w=base.videoWidth||base.naturalWidth||base.width,h=base.videoHeight||base.naturalHeight||base.height;if(!w||!h)return;const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(base,0,0,w,h);const margin=Math.max(18,Math.round(w*.012)),mh=Math.round(Math.min(h*.30,w*.175)),mw=Math.round(mh);const px=margin+mw+Math.round(w*.018),py=margin,pw=w-px-margin;await drawMap(x,margin,margin,mw,mw);x.fillStyle='rgba(20,24,29,.84)';round(x,px,py,pw,mh,8);x.fill();x.fillStyle='#f4f5f6';let fs=Math.max(22,Math.round(mh*.16));x.font='700 '+fs+'px Arial';x.fillText(place.value,px+Math.round(mw*.035),py+fs+Math.round(mh*.05));x.font=Math.max(12,Math.round(fs*.58))+'px Arial';const max=pw-Math.round(pw*.03);let al=address.value;while(x.measureText(al).width>max&&al.length>10)al=al.slice(0,-4)+'…';x.fillText(al,px+Math.round(mw*.035),py+fs+Math.round(mh*.16));x.font=Math.max(12,Math.round(fs*.62))+'px Arial';x.fillText('Lat '+(+lat.value).toFixed(5)+'°',px+Math.round(mw*.035),py+fs+Math.round(mh*.29));x.fillText('Long '+(+lng.value).toFixed(5)+'°',px+Math.round(mw*.035),py+fs+Math.round(mh*.41));x.fillText(stampText(),px+Math.round(mw*.035),py+fs+Math.round(mh*.53));x.font='700 '+Math.max(13,Math.round(fs*.55))+'px Arial';x.fillText('GPS Map Camera',px+pw-Math.round(pw*.24),py+Math.round(mh*.16));const raw=c.toDataURL('image/jpeg',.95);let out=raw;try{const d=new Date(date.value||Date.now()),p=n=>String(n).padStart(2,'0');const dms=v=>{const a=Math.abs(v),g=Math.floor(a),m=Math.floor((a-g)*60),s=Math.round((((a-g)*60)-m)*60*100);return [[g,1],[m,1],[s,100]]};const ex={'0th':{'270':place.value+' | '+address.value},'GPS':{'1':+lat.value>=0?'N':'S','2':dms(+lat.value),'3':+lng.value>=0?'E':'W','4':dms(+lng.value)},'Exif':{'36867':d.getFullYear()+':'+p(d.getMonth()+1)+':'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())}};out=piexif.insert(piexif.dump(ex),raw)}catch(e){}$('download').disabled=false;$('download').onclick=()=>{const a=document.createElement('a');a.href=out;a.download='gps-map-camera.jpg';a.click()};const preview=URL.createObjectURL(dataUrlToBlob(out));$('photoPreview').src=preview;$('photoPreview').hidden=false;$('video').hidden=true}
+function dataUrlToBlob(u){const [h,b]=u.split(',');const bin=atob(b);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:'image/jpeg'})}
+async function drawMap(c,x,y,w,h){const im=new Image();im.crossOrigin='anonymous';im.src=lastMapUrl||'';await new Promise(r=>{im.onload=r;im.onerror=r});if(im.complete&&im.naturalWidth)c.drawImage(im,x,y,w,h);else{c.fillStyle='#4b5948';c.fillRect(x,y,w,h)}c.save();c.translate(x+w/2,y+h/2);c.rotate(-Math.PI/4);c.fillStyle='#e8332e';c.beginPath();c.arc(0,0,Math.max(8,w*.055),0,Math.PI*2);c.fill();c.restore()}
+function round(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+refreshMap();renderStamp();startGPS();
 </script>
 </body>
 </html>
